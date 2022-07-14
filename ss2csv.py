@@ -3,12 +3,28 @@ import numpy as np
 import sys
 import os
 
-infile = sys.argv[1]
-
 try:
-    outfile = sys.argv[2]
+    infile = sys.argv[1]
+
+    try:
+        outfile = sys.argv[2]
+    except:
+        outfile = os.path.splitext(infile)[0] + ".csv"
+
+    sf = file2table(infile)
+
+    assert len(sf['SPECTRAL_NM']) == len(sf['SPECTRAL_VAL'])
+    newcols = ['nm' + item for item in sf['SPECTRAL_NM'].iloc[0]]
+    tmp = sf['SPECTRAL_VAL']
+    tmp.columns = newcols
+    sf[newcols] = tmp
+    trunccols = [item for item in sf.columns if item not in ['SPECTRAL_NM','SPECTRAL_VAL']]
+    sf = sf[trunccols]
+
+    sf.to_csv(outfile,index=False)
+
 except:
-    outfile = os.path.splitext(infile)[0] + ".csv"
+    pass
 
 def file2table(f):
     with open(f,'r') as colorfile:
@@ -54,15 +70,3 @@ def file2table(f):
                 print('bad row')
 
     return sf
-
-sf = file2table(infile)
-
-assert len(sf['SPECTRAL_NM']) == len(sf['SPECTRAL_VAL'])
-newcols = ['nm' + item for item in sf['SPECTRAL_NM'].iloc[0]]
-tmp = sf['SPECTRAL_VAL']
-tmp.columns = newcols
-sf[newcols] = tmp
-trunccols = [item for item in sf.columns if item not in ['SPECTRAL_NM','SPECTRAL_VAL']]
-sf = sf[trunccols]
-
-sf.to_csv(outfile,index=False)
