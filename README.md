@@ -16,5 +16,5 @@ import sys
 sys.path.append("/Users/damoncrockett")
 from ss2csv.ss2csv import file2table,cleancols
 
-df = cleancols(file2table(ssfile.txt))
+df = cleancols(file2table(example.txt))
 ```
