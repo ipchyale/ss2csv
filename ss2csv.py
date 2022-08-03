@@ -48,6 +48,17 @@ def file2table(f):
 
     return sf
 
+def cleancols(sf):
+    assert len(sf['SPECTRAL_NM']) == len(sf['SPECTRAL_VAL'])
+    newcols = ['nm' + item for item in sf['SPECTRAL_NM'].iloc[0]]
+    tmp = sf['SPECTRAL_VAL']
+    tmp.columns = newcols
+    sf[newcols] = tmp
+    trunccols = [item for item in sf.columns if item not in ['SPECTRAL_NM','SPECTRAL_VAL']]
+    sf = sf[trunccols]
+
+    return sf
+
 def main():
     infile = sys.argv[1]
 
@@ -57,15 +68,7 @@ def main():
         outfile = os.path.splitext(infile)[0] + ".csv"
 
     sf = file2table(infile)
-
-    assert len(sf['SPECTRAL_NM']) == len(sf['SPECTRAL_VAL'])
-    newcols = ['nm' + item for item in sf['SPECTRAL_NM'].iloc[0]]
-    tmp = sf['SPECTRAL_VAL']
-    tmp.columns = newcols
-    sf[newcols] = tmp
-    trunccols = [item for item in sf.columns if item not in ['SPECTRAL_NM','SPECTRAL_VAL']]
-    sf = sf[trunccols]
-
+    sf = cleancols(sf)
     sf.to_csv(outfile,index=False)
 
 if __name__ == "__main__":
