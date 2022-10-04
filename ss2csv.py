@@ -21,7 +21,6 @@ def file2table(f):
 
     cols = collist[0].split('\t')
     cols = [item.rstrip('\n') for item in cols]
-    sf = pd.DataFrame(columns=cols)
 
     hunt = False
     vallists = []
@@ -37,23 +36,35 @@ def file2table(f):
             hunt = True
             vallist = []
 
+    rowlist = []
     for i,vallist in enumerate(vallists):
             l = [item.rstrip('\n').split('\t') for item in vallist]
             l = [item for sublist in l for item in sublist]
 
-            try:
-                sf.loc[i] = [item for item in l if item!='']
-            except:
+            n = len([item for item in l if item!=''])
+            if n==78:
+                rowlist.append([item for item in l if item!=''])
+            else:
                 print('bad row')
 
-    return sf
+    sf = pd.DataFrame(rowlist,columns=cols)
+
+    return sf,lens
 
 def cleancols(sf):
-    assert len(sf['SPECTRAL_NM']) == len(sf['SPECTRAL_VAL'])
+    assert len(sf['SPECTRAL_NM'].columns) == len(sf['SPECTRAL_VAL'].columns)
+
+    # creates list ['nm380','nm390',...]
     newcols = ['nm' + item for item in sf['SPECTRAL_NM'].iloc[0]]
+
+    # dataframe with all the spectral values and new column names from list above
     tmp = sf['SPECTRAL_VAL']
     tmp.columns = newcols
+
+    # set new columns in sf using tmp
     sf[newcols] = tmp
+
+    # removes the old columns
     trunccols = [item for item in sf.columns if item not in ['SPECTRAL_NM','SPECTRAL_VAL']]
     sf = sf[trunccols]
 
