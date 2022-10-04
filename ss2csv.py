@@ -45,7 +45,7 @@ def file2table(f):
             if n==78:
                 rowlist.append([item for item in l if item!=''])
             else:
-                print('bad row')
+                print('bad row',n)
 
     sf = pd.DataFrame(rowlist,columns=cols)
 
