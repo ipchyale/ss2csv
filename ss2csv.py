@@ -14,6 +14,7 @@ def file2table(f):
             break
 
     cols = [item.rstrip('\n') for item in colstring.split('\t')]
+    cols = [item for item in cols if item!='']
     ncols = len(cols)
 
     # we hunt for data between the 'BEGIN' and 'END' flags
