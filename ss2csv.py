@@ -59,6 +59,11 @@ def file2table(f):
     return sf
 
 def cleancols(sf):
+
+    cols = sf.columns
+    if any(['SPECTRAL_NM' not in cols, 'SPECTRAL_VAL' not in cols]):
+        return sf
+
     assert len(sf['SPECTRAL_NM'].columns) == len(sf['SPECTRAL_VAL'].columns)
 
     # creates list ['nm380','nm390',...]
