@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import sys
 import os
+import re
 
 def file2table(f):
     with open(f,'r') as colorfile:
